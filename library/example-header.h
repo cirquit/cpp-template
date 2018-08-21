@@ -17,6 +17,19 @@
 
 #include "autogen-CT-macros.h"
 
+/*!
+ *  \addtogroup example
+ *  @{
+ */
+
+/** \brief EXAMPLE namespace
+ *
+ */
+namespace example {
+
+/** \brief This is an exemplary function for macro testing reasons
+  * This is the additional comments section.
+  */
 int foo()
 {
     DEBUG_MSG_CT("Debug was called from here - " << 23 << '\n');
@@ -28,4 +41,6 @@ int foo()
     return 1;
 }
 
-#endif
+} // namespace example
+
+#endif // EXAMPLE_HEADER_H

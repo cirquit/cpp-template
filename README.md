@@ -49,5 +49,12 @@ Add this to the `CMakeLists.txt` file in your other project. Adapt the name and 
 find_package(<your-library-name> 1.0 REQUIRED)
 ```
 
+### Documentation
 
+To create the documentation and open in your browser, run:
 
+```bash
+> doxygen config.doxygen
+> cd Documentation/html
+> firefox index.html
+```
