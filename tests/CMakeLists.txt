@@ -1,5 +1,5 @@
 # define all tests here
-set(TESTS simple_test.cpp)
+set(TESTS example-test.cpp)
 
 add_executable(${TEST_NAME} catch.h main.cpp ${TESTS})
 

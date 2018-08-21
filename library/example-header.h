@@ -12,13 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <iostream>
-#include "../library/example-header.h"
+#ifndef EXAMPLE_HEADER_H
+#define EXAMPLE_HEADER_H
 
-int main(void)
+#include "autogen-CT-macros.h"
+
+int foo()
 {
-    std::cout << "Hello World!\n";
-    std::cout << foo() << '\n';
-
-    return 0;
+    DEBUG_MSG_CT("Debug was called from here - " << 23 << '\n');
+    DEBUG_CRIT_MSG_CT("Critical Debug was called from here - " << '\n'
+                    << "   - some list " << '\n'
+                    << "   - some list " << '\n'
+                    << "   - some list " << '\n'
+                    << "   - some list " << '\n');
+    return 1;
 }
+
+#endif

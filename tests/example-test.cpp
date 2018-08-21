@@ -1,5 +1,5 @@
 #include "catch.h"
-#include "../src/map.hpp"
+#include "../library/example-header.h"
 
 TEST_CASE("simple-test", "[simple]")
 {
