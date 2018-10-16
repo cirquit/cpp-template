@@ -18,7 +18,7 @@
 int main(void)
 {
     std::cout << "Hello World!\n";
-    std::cout << foo() << '\n';
+    std::cout << example::foo() << '\n';
 
     return 0;
 }

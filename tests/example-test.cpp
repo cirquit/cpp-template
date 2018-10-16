@@ -3,5 +3,5 @@
 
 TEST_CASE("simple-test", "[simple]")
 {
-    REQUIRE(foo() == 1);
+    REQUIRE(example::foo() == 1);
 }
