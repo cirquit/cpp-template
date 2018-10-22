@@ -13,15 +13,15 @@ cmake_minimum_required (VERSION 3.5.1)
 ##########################
 
 # a flag to enable tests 
-OPTION(ENABLE_TESTS "Enables the compilation of tests (default: on)" ON)
+OPTION(ENABLE_TESTS_${UNIQUE_DEBUG_ID} "Enables the compilation of tests (default: on)" ON)
 
 # sets the debug level
-set(DEBUG_LEVEL "2" CACHE STRING "Sets the DEBUG Level (default: 2):
+set(DEBUG_LEVEL_${UNIQUE_DEBUG_ID} "2" CACHE STRING "Sets the DEBUG Level (default: 2):
                             \     * 0 ~ debugging disabled \n
                             \     * 1 ~ only critical debugging messages are enabled \n
                             \     * 2 ~ every debugging message is enabled \n")
 # 
-OPTION(ENABLE_OPTIMIZATIONS "Enables the optimization of the compiler (default: off)" OFF)
+OPTION(ENABLE_OPTIMIZATIONS_${UNIQUE_DEBUG_ID} "Enables the optimization of the compiler (default: off)" OFF)
 
 # allow colorized output
 if(NOT WIN32)
@@ -56,26 +56,26 @@ set(CMAKE_CXX_COMPILER=g++)
 add_compile_options(-std=c++14)
 
 # set the compiler flags according to the ENABLE_OPTIMIZATIONS flag
-if(ENABLE_OPTIMIZATIONS)
-    message(STATUS "${BoldWhite}${PROJECT_NAME}${ColourReset}: ${BoldGreen}Enabled${ColourReset} optimizations: -O2, change with ${BoldWhite}-DENABLE_OPTIMIZATIONS=OFF${ColourReset}")
+if(ENABLE_OPTIMIZATIONS_${UNIQUE_DEBUG_ID})
+    message(STATUS "${BoldWhite}${PROJECT_NAME}${ColourReset}: ${BoldGreen}Enabled${ColourReset} optimizations: -O2, change with ${BoldWhite}-DENABLE_OPTIMIZATIONS_${UNIQUE_DEBUG_ID}=OFF${ColourReset}")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
 else()
-    message(STATUS "${BoldWhite}${PROJECT_NAME}${ColourReset}: ${BoldRed}Disabled${ColourReset} optimizations: -O0, change with ${BoldWhite}-DENABLE_OPTIMIZATIONS=ON${ColourReset}")
+    message(STATUS "${BoldWhite}${PROJECT_NAME}${ColourReset}: ${BoldRed}Disabled${ColourReset} optimizations: -O0, change with ${BoldWhite}-DENABLE_OPTIMIZATIONS_${UNIQUE_DEBUG_ID}=ON${ColourReset}")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
 endif()
 
 # add the corresponding flags to the compiler to allow the macro generation
-if (DEBUG_LEVEL STREQUAL "0")
-    message(STATUS "${BoldWhite}${PROJECT_NAME}${ColourReset}: DEBUG_LEVEL is set to 0, debugging is ${BoldRed}disabled${ColourReset} with the flag ${BoldWhite}-DDEBUG_LEVEL=0${ColourReset}")
+if (DEBUG_LEVEL_${UNIQUE_DEBUG_ID} STREQUAL "0")
+    message(STATUS "${BoldWhite}${PROJECT_NAME}${ColourReset}: DEBUG_LEVEL_${UNIQUE_DEBUG_ID} is set to 0, debugging is ${BoldRed}disabled${ColourReset} with the flag ${BoldWhite}-DDEBUG_LEVEL_${UNIQUE_DEBUG_ID}=0${ColourReset}")
     add_definitions(-DDEBUG_LEVEL_${UNIQUE_DEBUG_ID}_0)
-elseif( DEBUG_LEVEL STREQUAL "1" )
-    message(STATUS "${BoldWhite}${PROJECT_NAME}${ColourReset}: DEBUG_LEVEL is set to 1, ${BoldRed}critical${ColourReset} debugging is ${BoldGreen}enabled${ColourReset} with the flag ${BoldWhite}-DDEBUG_LEVEL=1${ColourReset}")
+elseif( DEBUG_LEVEL_${UNIQUE_DEBUG_ID} STREQUAL "1" )
+    message(STATUS "${BoldWhite}${PROJECT_NAME}${ColourReset}: DEBUG_LEVEL_${UNIQUE_DEBUG_ID} is set to 1, ${BoldRed}critical${ColourReset} debugging is ${BoldGreen}enabled${ColourReset} with the flag ${BoldWhite}-DDEBUG_LEVEL_${UNIQUE_DEBUG_ID}=1${ColourReset}")
     add_definitions(-DDEBUG_LEVEL_${UNIQUE_DEBUG_ID}_1)
-elseif( DEBUG_LEVEL STREQUAL "2" )
-    message(STATUS "${BoldWhite}${PROJECT_NAME}${ColourReset}: DEBUG_LEVEL is set to 2, ${BoldGreen}all debugging is enabled${ColourReset} with the flag ${BoldWhite}-DDEBUG_LEVEL=2${ColourReset}")
+elseif( DEBUG_LEVEL_${UNIQUE_DEBUG_ID} STREQUAL "2" )
+    message(STATUS "${BoldWhite}${PROJECT_NAME}${ColourReset}: DEBUG_LEVEL_${UNIQUE_DEBUG_ID} is set to 2, ${BoldGreen}all debugging is enabled${ColourReset} with the flag ${BoldWhite}-DDEBUG_LEVEL_${UNIQUE_DEBUG_ID}=2${ColourReset}")
     add_definitions(-DDEBUG_LEVEL_${UNIQUE_DEBUG_ID}_2)
 else()
-    message(FATAL_ERROR "${BoldWhite}${PROJECT_NAME}${ColourReset}: DEBUG_LEVEL is not properly defined as '${DEBUG_LEVEL}', please define it")
+    message(FATAL_ERROR "${BoldWhite}${PROJECT_NAME}${ColourReset}: DEBUG_LEVEL_${UNIQUE_DEBUG_ID} is not properly defined as '${DEBUG_LEVEL_${UNIQUE_DEBUG_ID}}', please define it as 0,1 or 2")
 endif()
 
 # set the other compiler usually needed compiler flags
@@ -199,9 +199,9 @@ add_subdirectory( library )
 add_subdirectory( src )
 
 # add tests
-if( ENABLE_TESTS )
-    message( STATUS "${BoldWhite}${PROJECT_NAME}${ColourReset}: ${BoldGreen}Enabled${ColourReset} the compilation of tests, change with ${BoldWhite}-DENABLE_TESTS=OFF${ColourReset}" )
+if( ENABLE_TESTS_${UNIQUE_DEBUG_ID} )
+    message( STATUS "${BoldWhite}${PROJECT_NAME}${ColourReset}: ${BoldGreen}Enabled${ColourReset} the compilation of tests, change with ${BoldWhite}-DENABLE_TESTS_${UNIQUE_DEBUG_ID}=OFF${ColourReset}" )
     add_subdirectory( tests )
 else()
-    message( STATUS "${BoldWhite}${PROJECT_NAME}${ColourReset}: ${BoldRed}Disabled${ColourReset} the compilation of tests, change with ${BoldWhite}-DENABLE_TESTS=ON${ColourReset}" )
+    message( STATUS "${BoldWhite}${PROJECT_NAME}${ColourReset}: ${BoldRed}Disabled${ColourReset} the compilation of tests, change with ${BoldWhite}-DENABLE_TESTS_${UNIQUE_DEBUG_ID}=ON${ColourReset}" )
 endif()
