@@ -68,84 +68,73 @@ endif()
 if (DEBUG_LEVEL_${UNIQUE_DEBUG_ID} STREQUAL "0")
     message(STATUS "${BoldWhite}${PROJECT_NAME}${ColourReset}: DEBUG_LEVEL_${UNIQUE_DEBUG_ID} is set to 0, debugging is ${BoldRed}disabled${ColourReset} with the flag ${BoldWhite}-DDEBUG_LEVEL_${UNIQUE_DEBUG_ID}=0${ColourReset}")
     add_definitions(-DDEBUG_LEVEL_${UNIQUE_DEBUG_ID}_0)
+    # create a header for automatic debugging
+    file(WRITE "library/autogen-${UNIQUE_DEBUG_ID}-macros.h"
+"
+\#ifndef AUTOGEN_${UNIQUE_DEBUG_ID}_MACROS_H
+\#define AUTOGEN_${UNIQUE_DEBUG_ID}_MACROS_H
+\    #include <string.h>
+\    //! macro preprocessing of the file standart to get the filename instead of the full filepath
+\    #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+
+\    // if debugging is disabled, the macros don't do anything 
+
+\    //! logging based on the DEBUG_LEVEL_${UNIQUE_DEBUG_ID} defined while building with cmake (only active with DEBUG_LEVEL_${UNIQUE_DEBUG_ID}=2)
+\    #define DEBUG_MSG_${UNIQUE_DEBUG_ID}(msg)
+\    //! logging based on the DEBUG_LEVEL_${UNIQUE_DEBUG_ID} defined while building with cmake (active with DEBUG_LEVEL_${UNIQUE_DEBUG_ID}=1 and 2)
+\    #define DEBUG_CRIT_MSG_${UNIQUE_DEBUG_ID}(msg)
+\#endif // AUTOGEN_${UNIQUE_DEBUG_ID}_MACROS_H")
+
 elseif( DEBUG_LEVEL_${UNIQUE_DEBUG_ID} STREQUAL "1" )
     message(STATUS "${BoldWhite}${PROJECT_NAME}${ColourReset}: DEBUG_LEVEL_${UNIQUE_DEBUG_ID} is set to 1, ${BoldRed}critical${ColourReset} debugging is ${BoldGreen}enabled${ColourReset} with the flag ${BoldWhite}-DDEBUG_LEVEL_${UNIQUE_DEBUG_ID}=1${ColourReset}")
     add_definitions(-DDEBUG_LEVEL_${UNIQUE_DEBUG_ID}_1)
+    # create a header for automatic debugging
+    file(WRITE "library/autogen-${UNIQUE_DEBUG_ID}-macros.h"
+"
+\#ifndef AUTOGEN_${UNIQUE_DEBUG_ID}_MACROS_H
+\#define AUTOGEN_${UNIQUE_DEBUG_ID}_MACROS_H
+\    #include <string.h>
+\    //! macro preprocessing of the file standart to get the filename instead of the full filepath
+\    #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+
+\    #include <iostream>
+\    //! logging based on the DEBUG_LEVEL_${UNIQUE_DEBUG_ID} defined while building with cmake (only active with DEBUG_LEVEL_${UNIQUE_DEBUG_ID}=2)
+\    #define DEBUG_MSG_${UNIQUE_DEBUG_ID}(msg)
+\    //! logging based on the DEBUG_LEVEL_${UNIQUE_DEBUG_ID} defined while building with cmake (active with DEBUG_LEVEL_${UNIQUE_DEBUG_ID}=1 and 2)
+\    #define DEBUG_CRIT_MSG_CT(msg) std::cerr << \"[CT INFO - \" \\
+\                        << __FILENAME__ << ':' \\
+\                        << __LINE__ << ':'     \\
+\                        << __func__ << \"()]: \"    \\
+\                        << msg;
+\#endif // AUTOGEN_${UNIQUE_DEBUG_ID}_MACROS_H")
 elseif( DEBUG_LEVEL_${UNIQUE_DEBUG_ID} STREQUAL "2" )
     message(STATUS "${BoldWhite}${PROJECT_NAME}${ColourReset}: DEBUG_LEVEL_${UNIQUE_DEBUG_ID} is set to 2, ${BoldGreen}all debugging is enabled${ColourReset} with the flag ${BoldWhite}-DDEBUG_LEVEL_${UNIQUE_DEBUG_ID}=2${ColourReset}")
     add_definitions(-DDEBUG_LEVEL_${UNIQUE_DEBUG_ID}_2)
+    # create a header for automatic debugging
+    file(WRITE "library/autogen-${UNIQUE_DEBUG_ID}-macros.h"
+"
+\#ifndef AUTOGEN_${UNIQUE_DEBUG_ID}_MACROS_H
+\#define AUTOGEN_${UNIQUE_DEBUG_ID}_MACROS_H
+\    #include <string.h>
+\    //! macro preprocessing of the file standart to get the filename instead of the full filepath
+\    #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+
+\    #include <iostream>
+\    //! logging based on the DEBUG_LEVEL_${UNIQUE_DEBUG_ID} defined while building with cmake (only active with DEBUG_LEVEL=2)
+\    #define DEBUG_MSG_${UNIQUE_DEBUG_ID}(msg) std::cerr << \"[CT INFO - \" \\
+\                        << __FILENAME__ << ':' \\
+\                        << __LINE__ << ':'     \\
+\                        << __func__ << \"()]: \"    \\
+\                        << msg;
+\    //! logging based on the DEBUG_LEVEL_${UNIQUE_DEBUG_ID} defined while building with cmake (active with DEBUG_LEVEL=1 and 2)
+\    #define DEBUG_CRIT_MSG_${UNIQUE_DEBUG_ID}(msg) DEBUG_MSG_${UNIQUE_DEBUG_ID}(msg)
+\#endif // AUTOGEN_${UNIQUE_DEBUG_ID}_MACROS_H")
 else()
     message(FATAL_ERROR "${BoldWhite}${PROJECT_NAME}${ColourReset}: DEBUG_LEVEL_${UNIQUE_DEBUG_ID} is not properly defined as '${DEBUG_LEVEL_${UNIQUE_DEBUG_ID}}', please define it as 0,1 or 2")
 endif()
 
 # set the other compiler usually needed compiler flags
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -Wall -Wextra -Wfatal-errors -pedantic -g -fPIC")
-
-# create a header for automatic debugging
-
-file(WRITE "library/autogen-${UNIQUE_DEBUG_ID}-macros.h"
-"// Copyright 2019 municHMotorsport e.V. <info@munichmotorsport.de>
-\//
-\// Licensed under the Apache License, Version 2.0 (the \"License\");
-\// you may not use this file except in compliance with the License.
-\// You may obtain a copy of the License at
-\//
-\//     http://www.apache.org/licenses/LICENSE-2.0
-\//
-\// Unless required by applicable law or agreed to in writing, software
-\// distributed under the License is distributed on an \"AS IS\" BASIS,
-\// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-\// See the License for the specific language governing permissions and
-\// limitations under the License.
-
-\#ifndef AUTOGEN_${UNIQUE_DEBUG_ID}_MACROS_H
-\#define AUTOGEN_${UNIQUE_DEBUG_ID}_MACROS_H
-
-\// if any debug level is defined, we create the appropriate macros for logging based on the -DDEBUG_LEVEL=X specified while building with cmake
-\#if  defined(DEBUG_LEVEL_${UNIQUE_DEBUG_ID}_0) \\
-\  || defined(DEBUG_LEVEL_${UNIQUE_DEBUG_ID}_1) \\
-\  || defined(DEBUG_LEVEL_${UNIQUE_DEBUG_ID}_2) \\
-
-\    #include <string.h>
-\    //! macro preprocessing of the file standart to get the filename instead of the full filepath
-\    #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
-
-\    // if debugging is disabled, the macros don't do anything 
-\    #if DEBUG_LEVEL_${UNIQUE_DEBUG_ID}_0
-
-\    //! logging based on the DEBUG_LEVEL defined while building with cmake (only active with DEBUG_LEVEL=2)
-\    #define DEBUG_MSG_${UNIQUE_DEBUG_ID}(msg)
-\    //! logging based on the DEBUG_LEVEL defined while building with cmake (active with DEBUG_LEVEL=1 and 2)
-\    #define DEBUG_CRIT_MSG_${UNIQUE_DEBUG_ID}(msg)
-
-\    // if critical debugging is enabled, only the DEBUG_CRIT_MSG_${UNIQUE_DEBUG_ID} prints the message to std::cerr
-\    #elif DEBUG_LEVEL_${UNIQUE_DEBUG_ID}_1
-
-\    #include <iostream>
-\    //! logging based on the DEBUG_LEVEL defined while building with cmake (only active with DEBUG_LEVEL=2)
-\    #define DEBUG_MSG_${UNIQUE_DEBUG_ID}(msg)
-\    //! logging based on the DEBUG_LEVEL defined while building with cmake (active with DEBUG_LEVEL=1 and 2)
-\    #define DEBUG_CRIT_MSG_CT(msg) std::cerr << \"[CT INFO - \" \\
-\                        << __FILENAME__ << ':' \\
-\                        << __LINE__ << ':'     \\
-\                        << __func__ << \"()]: \"    \\
-\                        << msg;
-
-\    // if debugging is enabled, both macros print the messages to std::cerr
-\    #else
-
-\    #include <iostream>
-\    //! logging based on the DEBUG_LEVEL defined while building with cmake (only active with DEBUG_LEVEL=2)
-\    #define DEBUG_MSG_${UNIQUE_DEBUG_ID}(msg) std::cerr << \"[CT INFO - \" \\
-\                        << __FILENAME__ << ':' \\
-\                        << __LINE__ << ':'     \\
-\                        << __func__ << \"()]: \"    \\
-\                        << msg;
-\    //! logging based on the DEBUG_LEVEL defined while building with cmake (active with DEBUG_LEVEL=1 and 2)
-\    #define DEBUG_CRIT_MSG_${UNIQUE_DEBUG_ID}(msg) DEBUG_MSG_${UNIQUE_DEBUG_ID}(msg)
-\    #endif
-\#endif 
-\#endif // AUTOGEN_${UNIQUE_DEBUG_ID}_MACROS_H")
 
 
 ##########################
@@ -187,8 +176,6 @@ install(FILES ${CPP_LIB_NAME}-config.cmake DESTINATION ${main_lib_dest})
 configure_file(${CPP_LIB_NAME}-config-version.cmake ${CMAKE_CURRENT_BINARY_DIR}/${CPP_LIB_NAME}-config-version.cmake @ONLY)
 install(FILES ${CPP_LIB_NAME}-config.cmake ${CMAKE_CURRENT_BINARY_DIR}/${CPP_LIB_NAME}-config-version.cmake DESTINATION ${main_lib_dest})
 install(EXPORT ${CPP_LIB_NAME} DESTINATION "${main_lib_dest}")
-
-
 
 ##########################
 ## source code options
