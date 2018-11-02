@@ -62,7 +62,7 @@ find_package(<your-library-name> 1.0 REQUIRED)
 To create the documentation and open in your browser, run:
 
 ```bash
-> doxygen config.doxygen
+> doxygen doxygen.config
 > cd Documentation/html
 > firefox index.html
 ```
