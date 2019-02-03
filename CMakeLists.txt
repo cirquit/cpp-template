@@ -219,7 +219,7 @@ else()
 endif()
 
 # Add source files to later be formatted
-add_sources( src/*.cpp library/*.h tests/*.cpp)
+add_sources(src/*.cpp library/*.h tests/*.cpp)
 
 
 ###################################
@@ -233,7 +233,7 @@ find_program(
     DOC "Path to clang-tidy executable"
 )
 if(NOT CLANG_TIDY_EXE)
-  message(STATUS "clang-tidy not found.")
+  message(STATUS "clang-tidy-6.0 not found.")
 else()
   message(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
   # Use -warnings-as-errors=* simlilarly to -checks=* if need be. Only available from clang-tidy-3.9
@@ -248,7 +248,7 @@ find_program(
     DOC "Path to clang-format executable"
 )
 if(NOT CLANG_FORMAT_EXE)
-  message(STATUS "clang-format not found.")
+  message(STATUS "clang-format-6.0 not found.")
 else()
   message(STATUS "clang-format found: ${CLANG_FORMAT_EXE}")
   set(DO_CLANG_FORMAT "${CLANG_FORMAT_EXE}" " -i -style=file")
@@ -271,6 +271,7 @@ set_target_properties(
     COMPILE_FLAGS "${WARNING_FLAGS}"
 )
 
+# Add more, if there are more targets to be linted
 if(CLANG_TIDY_EXE)
   set_target_properties(
       ${EXEC_NAME} PROPERTIES
