@@ -6,7 +6,7 @@ set(CPP_LIB_NAME cpp)
 set(TEST_NAME cpp-test)
 
 project (${PROJECT_NAME})
-cmake_minimum_required (VERSION 3.5.1)
+cmake_minimum_required (VERSION 3.8)
 
 ##########################
 ## command line options
@@ -177,6 +177,31 @@ configure_file(${CPP_LIB_NAME}-config-version.cmake ${CMAKE_CURRENT_BINARY_DIR}/
 install(FILES ${CPP_LIB_NAME}-config.cmake ${CMAKE_CURRENT_BINARY_DIR}/${CPP_LIB_NAME}-config-version.cmake DESTINATION ${main_lib_dest})
 install(EXPORT ${CPP_LIB_NAME} DESTINATION "${main_lib_dest}")
 
+###################################
+## Utility functions
+###################################
+
+# function to collect all the sources from sub-directories
+# into a single list
+function(add_sources)
+  get_property(is_defined GLOBAL PROPERTY SRCS_LIST DEFINED)
+  if(NOT is_defined)
+    define_property(GLOBAL PROPERTY SRCS_LIST
+        BRIEF_DOCS "List of source files"
+        FULL_DOCS "List of source files to be compiled in one library")
+  endif()
+  # make absolute paths
+  set(SRCS)
+  foreach(s IN LISTS ARGN)
+    if(NOT IS_ABSOLUTE "${s}")
+      get_filename_component(s "${s}" ABSOLUTE)
+    endif()
+    list(APPEND SRCS "${s}")
+  endforeach()
+  # append to global list
+  set_property(GLOBAL APPEND PROPERTY SRCS_LIST "${SRCS}")
+endfunction(add_sources)
+
 ##########################
 ## source code options
 ##########################
@@ -191,4 +216,64 @@ if( ENABLE_TESTS_${UNIQUE_DEBUG_ID} )
     add_subdirectory( tests )
 else()
     message( STATUS "${BoldWhite}${PROJECT_NAME}${ColourReset}: ${BoldRed}Disabled${ColourReset} the compilation of tests, change with ${BoldWhite}-DENABLE_TESTS_${UNIQUE_DEBUG_ID}=ON${ColourReset}" )
+endif()
+
+# Add source files to later be formatted
+add_sources( src/*.cpp library/*.h tests/*.cpp)
+
+
+###################################
+## formatting and linting options
+###################################
+
+# finds clang-tidy executable
+find_program(
+    CLANG_TIDY_EXE
+    NAMES "clang-tidy-6.0"
+    DOC "Path to clang-tidy executable"
+)
+if(NOT CLANG_TIDY_EXE)
+  message(STATUS "clang-tidy not found.")
+else()
+  message(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
+  # Use -warnings-as-errors=* simlilarly to -checks=* if need be. Only available from clang-tidy-3.9
+  # -fix might break things, use with care
+  set(DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "-format-style=file")
+endif()
+
+# finds clang-format executable
+find_program(
+    CLANG_FORMAT_EXE
+    NAMES "clang-format-6.0"
+    DOC "Path to clang-format executable"
+)
+if(NOT CLANG_FORMAT_EXE)
+  message(STATUS "clang-format not found.")
+else()
+  message(STATUS "clang-format found: ${CLANG_FORMAT_EXE}")
+  set(DO_CLANG_FORMAT "${CLANG_FORMAT_EXE}" " -i -style=file")
+endif()
+
+if(CLANG_FORMAT_EXE)
+
+  get_property(SRCS GLOBAL PROPERTY SRCS_LIST)
+  add_custom_target(
+      tidy-my-code
+      COMMAND ${CLANG_FORMAT_EXE} -i -style=file ${SRCS}
+  )
+endif()
+
+# set up clang-tidy
+set_target_properties(
+    ${EXEC_NAME} PROPERTIES
+    CXX_STANDARD 11
+    CXX_STANDARD_REQUIRED ON
+    COMPILE_FLAGS "${WARNING_FLAGS}"
+)
+
+if(CLANG_TIDY_EXE)
+  set_target_properties(
+      ${EXEC_NAME} PROPERTIES
+      CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
+  )
 endif()
