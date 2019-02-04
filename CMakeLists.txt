@@ -6,7 +6,7 @@ set(CPP_LIB_NAME cpp)
 set(TEST_NAME cpp-test)
 
 project (${PROJECT_NAME})
-cmake_minimum_required (VERSION 3.5.1)
+cmake_minimum_required (VERSION 3.6)
 
 ##########################
 ## command line options
