@@ -6,7 +6,7 @@ set(CPP_LIB_NAME cpp)
 set(TEST_NAME cpp-test)
 
 project (${PROJECT_NAME})
-cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required (VERSION 3.5.1)
 
 ##########################
 ## command line options
@@ -229,11 +229,11 @@ add_sources(src/*.cpp library/*.h tests/*.cpp)
 # finds clang-tidy executable
 find_program(
     CLANG_TIDY_EXE
-    NAMES "clang-tidy-6.0"
+    NAMES "clang-tidy-5.0"
     DOC "Path to clang-tidy executable"
 )
 if(NOT CLANG_TIDY_EXE)
-  message(STATUS "clang-tidy-6.0 not found.")
+  message(STATUS "clang-tidy-5.0 not found.")
 else()
   message(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
   # Use -warnings-as-errors=* simlilarly to -checks=* if need be. Only available from clang-tidy-3.9
@@ -244,11 +244,11 @@ endif()
 # finds clang-format executable
 find_program(
     CLANG_FORMAT_EXE
-    NAMES "clang-format-6.0"
+    NAMES "clang-format"
     DOC "Path to clang-format executable"
 )
 if(NOT CLANG_FORMAT_EXE)
-  message(STATUS "clang-format-6.0 not found.")
+  message(STATUS "clang-format not found.")
 else()
   message(STATUS "clang-format found: ${CLANG_FORMAT_EXE}")
   set(DO_CLANG_FORMAT "${CLANG_FORMAT_EXE}" " -i -style=file")
@@ -258,7 +258,7 @@ if(CLANG_FORMAT_EXE)
 
   get_property(SRCS GLOBAL PROPERTY SRCS_LIST)
   add_custom_target(
-      tidy-my-code
+      format-my-code
       COMMAND ${CLANG_FORMAT_EXE} -i -style=file ${SRCS}
   )
 endif()
@@ -273,8 +273,19 @@ set_target_properties(
 
 # Add more, if there are more targets to be linted
 if(CLANG_TIDY_EXE)
+  # Set Linting up for Executable
   set_target_properties(
       ${EXEC_NAME} PROPERTIES
+      CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
+  )
+  # Set Linting up for Libraries
+  set_target_properties(
+      ${CPP_LIB_NAME} PROPERTIES
+      CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
+  )
+  # Set Linting up for Tests
+  set_target_properties(
+      ${TEST_NAME} PROPERTIES
       CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
   )
 endif()
