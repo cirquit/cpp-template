@@ -37,9 +37,9 @@ the `CPP_TEMPLATE_SOURCE_DIR` has to be `<YOUR_PROJECT_NAME>_SOURCE_DIR` in caps
 
 To enable linting and code style formatting we still need `clang-tidy` and `clang-format`. 
 ```bash
-> sudo apt install clang-tidy-6.0 clang-format-6.0
+> sudo apt install clang-tidy-5.0 clang-format
 ```
-In this template we're using version 6.0 of the clang extra tools. To use another version, adjust the NAMES attribute in the `CMakeLists.txt` file accordingly:
+In this template we're using version 5.0 of the clang extra tools. To use another version, adjust the NAMES attribute in the `CMakeLists.txt` file accordingly:
 ```cmake
 find_program(
     CLANG_TIDY_EXE
@@ -47,6 +47,13 @@ find_program(
     DOC "Path to clang-tidy executable"
 )
 ```
+#### CMake
+The property needed to integrate clang-tidy into the build process is only available from CMake Version 3.6
+Check your current version with:
+```bash 
+> cmake --version
+```
+If needed, install a newer version: https://askubuntu.com/questions/829310/how-to-upgrade-cmake-in-ubuntu
 
 #### Clang-Tidy
 At the end of the `CMakeLists.txt` file we set our executable to be linted, this has to be done for each additional target to be linted. 
@@ -62,8 +69,8 @@ The linter will be executed each time you `make` the according target.
 Changes to the configuration can be done by editing `.clang-tidy` in the parent directory or by changing the `clang-tidy` flags used in the `CMakeLists.txt` file. See `clang-tidy-X.X -help` for more help.
 
 #### Clang-Format
-There's an additional target for formatting the source files called `tidy-my-code`.
-Each time `make tidy-my-code` is built, the respective source files are formatted. The target files to be formatted are defined in this call:
+There's an additional target for formatting the source files called `format-my-code`.
+Each time `make format-my-code` is built, the respective source files are formatted. The target files to be formatted are defined in this call:
 ```cmake
 add_sources(src/*.cpp library/*.h tests/*.cpp)
 ```
