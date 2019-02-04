@@ -238,7 +238,7 @@ else()
   message(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
   # Use -warnings-as-errors=* simlilarly to -checks=* if need be. Only available from clang-tidy-3.9
   # -fix might break things, use with care
-  set(DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "-format-style=file")
+  set(DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "-format-style=file" "-header-filter=?!catch.h")
 endif()
 
 # finds clang-format executable
@@ -283,9 +283,9 @@ if(CLANG_TIDY_EXE)
       ${CPP_LIB_NAME} PROPERTIES
       CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
   )
-  # Set Linting up for Tests
-  set_target_properties(
-      ${TEST_NAME} PROPERTIES
-      CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
-  )
+  # Set Linting up for Tests. Disabled because catch.h cannot be
+  #set_target_properties(
+  #    ${TEST_NAME} PROPERTIES
+  #    CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
+  #)
 endif()
