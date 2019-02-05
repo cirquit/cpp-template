@@ -76,6 +76,11 @@ add_sources(src/*.cpp library/*.h tests/*.cpp)
 ```
 Changes to the configuration can be done by editing `.clang-format` in the parent directory or by changing the `clang-format` flags used in the `CMakeLists.txt` file. See `clang-format-X.X -help` for more help.
 
+Clang Tools integration using CMake based on the blog posts by Mario Badr:
+
+[Using clang-format to Enforce Style](http://mariobadr.com/using-clang-format-to-enforce-style.html)
+[Using clang-tidy with CMake 3.6](http://mariobadr.com/using-clang-tidy-with-cmake-36.html)
+
 ### Build
 
 ```bash
