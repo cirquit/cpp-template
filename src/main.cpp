@@ -15,10 +15,9 @@
 #include <iostream>
 #include "../library/example-header.h"
 
-int main(void)
-{
-    std::cout << "Hello World!\n";
-    std::cout << example::foo() << '\n';
+int main() {
+  std::cout << "Hello World!\n";
+  std::cout << example::foo() << '\n';
 
-    return 0;
+  return 0;
 }

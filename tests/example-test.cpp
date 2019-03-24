@@ -1,7 +1,4 @@
-#include "catch.h"
 #include "../library/example-header.h"
+#include "catch.h"
 
-TEST_CASE("simple-test", "[simple]")
-{
-    REQUIRE(example::foo() == 1);
-}
+TEST_CASE("simple-test", "[simple]") { REQUIRE(example::foo() == 1); }

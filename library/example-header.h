@@ -28,19 +28,18 @@
 namespace example {
 
 /** \brief This is an exemplary function for macro testing reasons
-  * This is the additional comments section.
-  */
-int foo()
-{
-    DEBUG_MSG_CT("Debug was called from here - " << 23 << '\n');
-    DEBUG_CRIT_MSG_CT("Critical Debug was called from here - " << '\n'
-                    << "   - some list " << '\n'
-                    << "   - some list " << '\n'
-                    << "   - some list " << '\n'
-                    << "   - some list " << '\n');
-    return 1;
+ * This is the additional comments section.
+ */
+int foo() {
+  DEBUG_MSG_CT("Debug was called from here - " << 23 << '\n');
+  DEBUG_CRIT_MSG_CT("Critical Debug was called from here - " << '\n'
+                                                             << "   - some list " << '\n'
+                                                             << "   - some list " << '\n'
+                                                             << "   - some list " << '\n'
+                                                             << "   - some list " << '\n');
+  return 1;
 }
 
-} // namespace example
+}  // namespace example
 
-#endif // EXAMPLE_HEADER_H
+#endif  // EXAMPLE_HEADER_H
