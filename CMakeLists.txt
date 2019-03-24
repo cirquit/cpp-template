@@ -213,6 +213,7 @@ add_subdirectory( src )
 # add tests
 if( ENABLE_TESTS_${UNIQUE_DEBUG_ID} )
     message( STATUS "${BoldWhite}${PROJECT_NAME}${ColourReset}: ${BoldGreen}Enabled${ColourReset} the compilation of tests, change with ${BoldWhite}-DENABLE_TESTS_${UNIQUE_DEBUG_ID}=OFF${ColourReset}" )
+    enable_testing()
     add_subdirectory( tests )
 else()
     message( STATUS "${BoldWhite}${PROJECT_NAME}${ColourReset}: ${BoldRed}Disabled${ColourReset} the compilation of tests, change with ${BoldWhite}-DENABLE_TESTS_${UNIQUE_DEBUG_ID}=ON${ColourReset}" )
